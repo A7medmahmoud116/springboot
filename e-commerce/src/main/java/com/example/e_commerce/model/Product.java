@@ -24,7 +24,7 @@ public class Product {
     private int inventory;
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     private Category category;
 
