@@ -8,4 +8,8 @@ import java.util.Optional;
 
 public interface AssetRepository extends JpaRepository<Asset, Long> {
     Optional<List<Asset>> findByName(String name);
+
+    Optional<Asset> findBySerialNumber(String serialNumber);
+
+    boolean existsBySerialNumber(String serialNumber);
 }
