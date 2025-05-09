@@ -3,6 +3,7 @@ package com.example.Asset.Tracking.System.service.asset;
 import com.example.Asset.Tracking.System.dto.AssetDto;
 import com.example.Asset.Tracking.System.entity.Asset;
 import com.example.Asset.Tracking.System.request.AddAssetRequset;
+import com.example.Asset.Tracking.System.request.UpdateAssetRequest;
 
 import java.util.List;
 
@@ -25,8 +26,9 @@ public interface IAssetService {
     // delete asset by serial number
     Asset deleteAssetBySerialNumber(String serialNumber);
 
+
     // update asset
-    Asset updateAsset(Long id, Asset asset);
+    Asset updateAsset(Long id, UpdateAssetRequest asset);
 
     AssetDto toAssetDto(Asset asset);
 

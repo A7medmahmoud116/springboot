@@ -2,10 +2,12 @@ package com.example.Asset.Tracking.System.service.asset;
 
 import com.example.Asset.Tracking.System.dto.AssetDto;
 import com.example.Asset.Tracking.System.entity.Asset;
+import com.example.Asset.Tracking.System.enums.AssetStatus;
 import com.example.Asset.Tracking.System.exceptions.AlreadyExistException;
 import com.example.Asset.Tracking.System.exceptions.ResourceNotFound;
 import com.example.Asset.Tracking.System.repository.AssetRepository;
 import com.example.Asset.Tracking.System.request.AddAssetRequset;
+import com.example.Asset.Tracking.System.request.UpdateAssetRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -75,12 +77,12 @@ public class AssetService implements IAssetService{
     }
     // update asset
     @Override
-    public Asset updateAsset(Long id, Asset asset) {
+    public Asset updateAsset(Long id, UpdateAssetRequest asset) {
         Asset existingAsset = getAssetById(id);
         existingAsset.setName(asset.getName());
         existingAsset.setDescription(asset.getDescription());
         existingAsset.setSerialNumber(asset.getSerialNumber());
-        existingAsset.setStatus(asset.getStatus());
+        existingAsset.setStatus(AssetStatus.valueOf(asset.getStatus()));
         return assetRepository.save(existingAsset);
     }
     @Override
