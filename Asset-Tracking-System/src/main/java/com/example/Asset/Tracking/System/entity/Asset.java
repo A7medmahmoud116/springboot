@@ -4,6 +4,7 @@ import com.example.Asset.Tracking.System.enums.AssetStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -20,4 +21,13 @@ public class Asset {
 
     @Enumerated(EnumType.STRING)
     private AssetStatus status;
+
+    @ManyToOne(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+            CascadeType.DETACH
+    })
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

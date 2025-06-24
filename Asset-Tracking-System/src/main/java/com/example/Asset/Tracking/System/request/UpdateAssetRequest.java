@@ -1,5 +1,6 @@
 package com.example.Asset.Tracking.System.request;
 
+import com.example.Asset.Tracking.System.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,4 +13,5 @@ public class UpdateAssetRequest {
     private String description;
     private String serialNumber;
     private String Status;
+    private Category category;
 }

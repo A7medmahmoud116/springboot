@@ -2,7 +2,7 @@ package com.example.Asset.Tracking.System.controller.asset;
 
 import com.example.Asset.Tracking.System.dto.AssetDto;
 import com.example.Asset.Tracking.System.entity.Asset;
-import com.example.Asset.Tracking.System.request.AddAssetRequset;
+import com.example.Asset.Tracking.System.request.AddAssetRequest;
 import com.example.Asset.Tracking.System.request.UpdateAssetRequest;
 import com.example.Asset.Tracking.System.response.ApiResponse;
 import com.example.Asset.Tracking.System.service.asset.IAssetService;
@@ -22,11 +22,11 @@ public class AssetController {
     @GetMapping("")
     public ResponseEntity<ApiResponse> getAllAssets() {
         List<Asset> assets = assetService.getAllAssets();
-        List<AssetDto> assetDtos = assetService.convertAllAssetsToDto(assets);
-        return ResponseEntity.ok(new ApiResponse("success",assetDtos));
+        List<AssetDto> assetDto = assetService.convertAllAssetsToDto(assets);
+        return ResponseEntity.ok(new ApiResponse("success",assetDto));
     }
     @PostMapping("")
-    public ResponseEntity<ApiResponse> addAsset(@RequestBody AddAssetRequset asset) {
+    public ResponseEntity<ApiResponse> addAsset(@RequestBody AddAssetRequest asset) {
         Asset savedAsset = assetService.addAsset(asset);
         AssetDto assetDto = assetService.toAssetDto(savedAsset);
         return ResponseEntity.ok(new ApiResponse("success",assetDto));
@@ -60,5 +60,11 @@ public class AssetController {
         Asset deletedAsset = assetService.deleteAssetBySerialNumber(serialNumber);
         AssetDto assetDto = assetService.toAssetDto(deletedAsset);
         return ResponseEntity.ok(new ApiResponse("Asset deleted",assetDto));
+    }
+    @GetMapping("/name")
+    public ResponseEntity<ApiResponse> getAssetsByCategoryName(@RequestParam String name){
+        List<Asset> assets = assetService.getAssetsByCategoryName(name);
+        List<AssetDto> assetDto = assetService.convertAllAssetsToDto(assets);
+        return ResponseEntity.ok(new ApiResponse("success",assetDto));
     }
 }

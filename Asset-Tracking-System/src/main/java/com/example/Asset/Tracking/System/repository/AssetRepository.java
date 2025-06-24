@@ -12,4 +12,6 @@ public interface AssetRepository extends JpaRepository<Asset, Long> {
     Optional<Asset> findBySerialNumber(String serialNumber);
 
     boolean existsBySerialNumber(String serialNumber);
+
+    Optional<List<Asset>> findByCategoryName(String name);
 }

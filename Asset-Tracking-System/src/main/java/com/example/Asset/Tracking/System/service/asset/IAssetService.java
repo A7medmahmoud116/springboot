@@ -2,7 +2,7 @@ package com.example.Asset.Tracking.System.service.asset;
 
 import com.example.Asset.Tracking.System.dto.AssetDto;
 import com.example.Asset.Tracking.System.entity.Asset;
-import com.example.Asset.Tracking.System.request.AddAssetRequset;
+import com.example.Asset.Tracking.System.request.AddAssetRequest;
 import com.example.Asset.Tracking.System.request.UpdateAssetRequest;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public interface IAssetService {
 
     Asset findBySerialNumber(String serialNumber);
 
-    Asset addAsset(AddAssetRequset asset);
+    Asset addAsset(AddAssetRequest asset);
 
     // find all assets
     List<Asset> getAllAssets();
@@ -29,6 +29,8 @@ public interface IAssetService {
 
     // update asset
     Asset updateAsset(Long id, UpdateAssetRequest asset);
+
+    List<Asset> getAssetsByCategoryName(String name);
 
     AssetDto toAssetDto(Asset asset);
 

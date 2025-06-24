@@ -2,12 +2,15 @@ package com.example.Asset.Tracking.System.service.asset;
 
 import com.example.Asset.Tracking.System.dto.AssetDto;
 import com.example.Asset.Tracking.System.entity.Asset;
+import com.example.Asset.Tracking.System.entity.Category;
 import com.example.Asset.Tracking.System.enums.AssetStatus;
 import com.example.Asset.Tracking.System.exceptions.AlreadyExistException;
 import com.example.Asset.Tracking.System.exceptions.ResourceNotFound;
 import com.example.Asset.Tracking.System.repository.AssetRepository;
-import com.example.Asset.Tracking.System.request.AddAssetRequset;
+import com.example.Asset.Tracking.System.repository.CategoryRepository;
+import com.example.Asset.Tracking.System.request.AddAssetRequest;
 import com.example.Asset.Tracking.System.request.UpdateAssetRequest;
+import com.example.Asset.Tracking.System.service.category.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ import static com.example.Asset.Tracking.System.enums.AssetStatus.AVAILABLE;
 public class AssetService implements IAssetService{
     private final AssetRepository assetRepository;
     private final ModelMapper modelMapper;
+    private final CategoryRepository categoryRepository;
 
     @Override
     public List<Asset> findByName(String name) {
@@ -41,15 +45,21 @@ public class AssetService implements IAssetService{
     }
 
     @Override
-    public Asset addAsset(AddAssetRequset asset) {
+    public Asset addAsset(AddAssetRequest asset) {
         if (existsBySerialNumber(asset.getSerialNumber())) {
             throw new AlreadyExistException("Asset already exists");
         }
+        Category category = categoryRepository.findByName(asset.getCategory().getName())
+                .orElseGet(() -> {
+                    Category newCategory = new Category(asset.getCategory().getName());
+                    return categoryRepository.save(newCategory);
+                });
         Asset savedAsset = new Asset();
         savedAsset.setName(asset.getName());
         savedAsset.setDescription(asset.getDescription());
         savedAsset.setSerialNumber(asset.getSerialNumber());
         savedAsset.setStatus(AVAILABLE);
+        savedAsset.setCategory(category);
         return assetRepository.save(savedAsset);
     }
     @Override
@@ -83,7 +93,13 @@ public class AssetService implements IAssetService{
         existingAsset.setDescription(asset.getDescription());
         existingAsset.setSerialNumber(asset.getSerialNumber());
         existingAsset.setStatus(AssetStatus.valueOf(asset.getStatus()));
+        existingAsset.setCategory(asset.getCategory());
         return assetRepository.save(existingAsset);
+    }
+    @Override
+    public List<Asset> getAssetsByCategoryName(String name){
+        List<Asset> assets = assetRepository.findByCategoryName(name).orElseThrow(()-> new ResourceNotFound("Assets Not Found"));
+        return assets;
     }
     @Override
     public AssetDto toAssetDto(Asset asset) {
