@@ -2,6 +2,7 @@ package com.example.Asset.Tracking.System.service.asset;
 
 import com.example.Asset.Tracking.System.dto.AssetDto;
 import com.example.Asset.Tracking.System.entity.Asset;
+import com.example.Asset.Tracking.System.enums.AssetStatus;
 import com.example.Asset.Tracking.System.request.AddAssetRequest;
 import com.example.Asset.Tracking.System.request.UpdateAssetRequest;
 
@@ -35,4 +36,6 @@ public interface IAssetService {
     AssetDto toAssetDto(Asset asset);
 
     List<AssetDto> convertAllAssetsToDto(List<Asset> assets);
+
+    void updateAssetStatus(Long id, AssetStatus status);
 }

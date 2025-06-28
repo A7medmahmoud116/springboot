@@ -4,6 +4,8 @@ import com.example.Asset.Tracking.System.enums.AssetStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,4 +32,10 @@ public class Asset {
     })
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
+    private List<AssetAssignment> assignments;
+
+    @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
+    private List<History> histories;
 }

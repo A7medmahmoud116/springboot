@@ -10,7 +10,6 @@ import com.example.Asset.Tracking.System.repository.AssetRepository;
 import com.example.Asset.Tracking.System.repository.CategoryRepository;
 import com.example.Asset.Tracking.System.request.AddAssetRequest;
 import com.example.Asset.Tracking.System.request.UpdateAssetRequest;
-import com.example.Asset.Tracking.System.service.category.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -97,8 +96,11 @@ public class AssetService implements IAssetService{
         return assetRepository.save(existingAsset);
     }
     @Override
-    public List<Asset> getAssetsByCategoryName(String name){
-        List<Asset> assets = assetRepository.findByCategoryName(name).orElseThrow(()-> new ResourceNotFound("Assets Not Found"));
+    public List<Asset> getAssetsByCategoryName(String name) {
+        List<Asset> assets = assetRepository.findByCategory_Name(name);
+        if (assets.isEmpty()) {
+            throw new ResourceNotFound("Category Not Found");
+        }
         return assets;
     }
     @Override
@@ -109,6 +111,13 @@ public class AssetService implements IAssetService{
     public List<AssetDto> convertAllAssetsToDto(List<Asset> assets) {
         return assets.stream().map(this::toAssetDto).toList();
     }
+    @Override
+    public void updateAssetStatus(Long id, AssetStatus status) {
+        Asset existingAsset = getAssetById(id);
+        existingAsset.setStatus(status);
+        assetRepository.save(existingAsset);
+    }
+
 
 
 

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @ControllerAdvice
@@ -24,6 +25,13 @@ public class GlobalExceptionHandler {
         error.setMessage(exception.getMessage());
         error.setStatus(NOT_FOUND.value());
         return new ResponseEntity<>(error,NOT_FOUND);
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExeptionResponse> handleAlreadyExistException(IllegalArgumentException exception) {
+        ExeptionResponse error = new ExeptionResponse();
+        error.setMessage(exception.getMessage());
+        error.setStatus(BAD_REQUEST.value());
+        return new ResponseEntity<>(error,BAD_REQUEST);
     }
 
 }
