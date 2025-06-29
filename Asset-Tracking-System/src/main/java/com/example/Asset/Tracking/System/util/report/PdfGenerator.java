@@ -32,7 +32,7 @@ public class PdfGenerator {
             table.setWidthPercentage(100);
             table.setWidths(new int[]{2, 3, 3, 3, 4, 4});
 
-            Stream.of("Asset", "User", "Notes", "Start Date", "End Date", "Status")
+            Stream.of("Asset", "Username", "Notes", "Start Date", "End Date", "Status")
                     .forEach(header -> {
                         PdfPCell cell = new PdfPCell(new Phrase(header));
                         cell.setBackgroundColor(Color.LIGHT_GRAY);
