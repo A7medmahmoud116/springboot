@@ -3,17 +3,21 @@ package com.example.Asset.Tracking.System.service.asset;
 import com.example.Asset.Tracking.System.dto.AssetDto;
 import com.example.Asset.Tracking.System.entity.Asset;
 import com.example.Asset.Tracking.System.entity.Category;
+import com.example.Asset.Tracking.System.entity.History;
 import com.example.Asset.Tracking.System.enums.AssetStatus;
 import com.example.Asset.Tracking.System.exceptions.AlreadyExistException;
 import com.example.Asset.Tracking.System.exceptions.ResourceNotFound;
 import com.example.Asset.Tracking.System.repository.AssetRepository;
 import com.example.Asset.Tracking.System.repository.CategoryRepository;
+import com.example.Asset.Tracking.System.repository.HistoryRepository;
 import com.example.Asset.Tracking.System.request.AddAssetRequest;
 import com.example.Asset.Tracking.System.request.UpdateAssetRequest;
+import com.example.Asset.Tracking.System.service.assignment.IAssetAssignmentService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,12 +29,20 @@ public class AssetService implements IAssetService{
     private final AssetRepository assetRepository;
     private final ModelMapper modelMapper;
     private final CategoryRepository categoryRepository;
+    /*private final IAssetAssignmentService assetAssignmentService;
+    private final HistoryRepository historyRepository;*/
 
     @Override
     public List<Asset> findByName(String name) {
         List<Asset> assets = assetRepository
                 .findByName(name).orElseThrow(() -> new ResourceNotFound("Asset not found"));
         return assets;
+    }
+    @Override
+    public Asset findById(Long id){
+        Asset asset = assetRepository
+                .findById(id).orElseThrow(() -> new ResourceNotFound("Asset not found"));
+        return asset;
     }
     @Override
     public Asset findBySerialNumber(String serialNumber) {
@@ -117,6 +129,9 @@ public class AssetService implements IAssetService{
         existingAsset.setStatus(status);
         assetRepository.save(existingAsset);
     }
+
+
+
 
 
 

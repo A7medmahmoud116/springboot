@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface HistoryRepository extends JpaRepository<History,Long> {
     Optional<History> findByUserAndAssetAndEndDateIsNull(User user, Asset asset);
+    Optional<History> findByAssetAndEndDateIsNull(Asset asset);
     List<History> findByUserId(Long userId);
     List<History> findByAssetId(Long assetId);
     List<History> findByUserIdAndAssetId(Long userId, Long assetId);

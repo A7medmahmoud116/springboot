@@ -11,6 +11,8 @@ import java.util.List;
 public interface IAssetService {
     List<Asset> findByName(String name);
 
+    Asset findById(Long id);
+
     Asset findBySerialNumber(String serialNumber);
 
     Asset addAsset(AddAssetRequest asset);
@@ -38,4 +40,8 @@ public interface IAssetService {
     List<AssetDto> convertAllAssetsToDto(List<Asset> assets);
 
     void updateAssetStatus(Long id, AssetStatus status);
+
+/*    void sendAssetToMaintenance(Long assetId);
+
+    void completeAssetMaintenance(Long assetId);*/
 }

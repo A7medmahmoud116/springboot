@@ -24,4 +24,15 @@ public class AssetAssignmentController {
         assetAssignmentService.deleteAssetAssignmentByAssetId(assetId);
         return ResponseEntity.ok(new ApiResponse("Asset assignment deleted successfully", null));
     }
+    @PutMapping("/{assetId}/maintain")
+    public ResponseEntity<ApiResponse> sendAssetToMaintenance(@PathVariable Long assetId) {
+        assetAssignmentService.sendAssetToMaintenance(assetId);
+        return ResponseEntity.ok(new ApiResponse("Asset sent to maintenance successfully", null));
+    }
+
+    @PutMapping("/{assetId}/maintenance-complete")
+    public ResponseEntity<ApiResponse> completeAssetMaintenance(@PathVariable Long assetId) {
+        assetAssignmentService.completeAssetMaintenance(assetId);
+        return ResponseEntity.ok(new ApiResponse("Asset maintenance completed ", null));
+    }
 }

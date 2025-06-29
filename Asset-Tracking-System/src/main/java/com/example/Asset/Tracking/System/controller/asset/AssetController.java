@@ -67,4 +67,5 @@ public class AssetController {
         List<AssetDto> assetDto = assetService.convertAllAssetsToDto(assets);
         return ResponseEntity.ok(new ApiResponse("success",assetDto));
     }
+
 }

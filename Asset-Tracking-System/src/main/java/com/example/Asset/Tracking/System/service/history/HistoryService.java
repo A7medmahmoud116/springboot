@@ -3,7 +3,6 @@ import com.example.Asset.Tracking.System.dto.HistoryDto;
 import com.example.Asset.Tracking.System.entity.History;
 import com.example.Asset.Tracking.System.repository.HistoryRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.List;
 public class HistoryService implements IHistoryService{
 
     private final HistoryRepository historyRepository;
-    private final ModelMapper modelMapper;
+
 
     @Override
     public List<History> getHistoryByUserId(Long userId) {
@@ -31,18 +30,25 @@ public class HistoryService implements IHistoryService{
     }
 
     @Override
-    public HistoryDto covertToDto(History history){
-        return new HistoryDto(
-                history.getId(),
-                history.getUser().getId(),
-                history.getUser().getUserName(),
-                history.getAsset().getId(),
-                history.getAsset().getName(),
-                history.getAsset().getSerialNumber(),
-                history.getNotes(),
-                history.getStartDate(),
-                history.getEndDate()
-        );
+    public HistoryDto covertToDto(History history) {
+        HistoryDto dto = new HistoryDto();
+        dto.setHistoryId(history.getId());
+        dto.setNotes(history.getNotes());
+        dto.setStartDate(history.getStartDate());
+        dto.setEndDate(history.getEndDate());
+
+        if (history.getUser() != null) {
+            dto.setUserId(history.getUser().getId());
+            dto.setUserName(history.getUser().getUserName());
+        }
+
+        if (history.getAsset() != null) {
+            dto.setAssetId(history.getAsset().getId());
+            dto.setAssetName(history.getAsset().getName());
+            dto.setAssetSerialNumber(history.getAsset().getSerialNumber());
+        }
+
+        return dto;
     }
 
     @Override

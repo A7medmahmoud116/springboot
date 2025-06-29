@@ -16,23 +16,25 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import static com.example.Asset.Tracking.System.enums.AssetStatus.AVAILABLE;
 import static com.example.Asset.Tracking.System.enums.AssetStatus.IN_USE;
 
 @Service
 @RequiredArgsConstructor
-public class AssetAssignmentService implements IAssetAssignmentService{
+public class AssetAssignmentService implements IAssetAssignmentService {
 
     private final AssetAssignmentRepository assignmentRepository;
     private final UserRepository userRepository;
     private final IAssetService assetService;
     private final HistoryRepository assetAssignmentHistoryRepository;
+
     @Override
     public AssetAssignment assignAssetToUser(AssignAssetRequest request) {
         User user = userRepository.findById(request.getUserId()).orElseThrow(
-                ()-> new ResourceNotFound("User not found")
+                () -> new ResourceNotFound("User not found")
         );
         Asset asset = assetService.getAssetById(request.getAssetId());
-        if(asset.getStatus() != AssetStatus.AVAILABLE){
+        if (asset.getStatus() != AVAILABLE) {
             String statusStr = asset.getStatus().name().toLowerCase().replace("_", " ");
             throw new IllegalArgumentException("Cannot assign asset. It is currently " + statusStr + ".");
         }
@@ -61,7 +63,7 @@ public class AssetAssignmentService implements IAssetAssignmentService{
     @Override
     public void deleteAssetAssignmentByAssetId(Long assetId) {
         AssetAssignment assignment = assignmentRepository.findActiveAssignmentByAssetId(assetId, IN_USE)
-                .orElseThrow(()-> new ResourceNotFound("there is no assignment for this asset"));
+                .orElseThrow(() -> new ResourceNotFound("there is no assignment for this asset"));
 
         History history = assetAssignmentHistoryRepository
                 .findByUserAndAssetAndEndDateIsNull(assignment.getUser(), assignment.getAsset())
@@ -71,6 +73,46 @@ public class AssetAssignmentService implements IAssetAssignmentService{
         assetAssignmentHistoryRepository.save(history);
 
         assignmentRepository.delete(assignment);
-        assetService.updateAssetStatus(assetId ,AssetStatus.AVAILABLE);
+        assetService.updateAssetStatus(assetId, AVAILABLE);
+    }
+
+    @Override
+    public void sendAssetToMaintenance(Long assetId) {
+        Asset asset = assetService.findById(assetId);
+        if (asset.getStatus() == AssetStatus.IN_USE) {
+            deleteAssetAssignmentByAssetId(assetId);
+            assetService.updateAssetStatus(assetId, AssetStatus.MAINTENANCE);
+            saveHistory(asset);
+        } else if (asset.getStatus() == AssetStatus.MAINTENANCE) {
+            throw new IllegalArgumentException("Asset is already under maintenance");
+        } else {
+            assetService.updateAssetStatus(assetId, AssetStatus.MAINTENANCE);
+            saveHistory(asset);
+        }
+    }
+
+    @Override
+    public void completeAssetMaintenance(Long assetId) {
+        Asset asset = assetService.findById(assetId);
+        if (asset.getStatus() == AssetStatus.MAINTENANCE) {
+            assetService.updateAssetStatus(assetId, AVAILABLE);
+
+            History history = assetAssignmentHistoryRepository
+                    .findByAssetAndEndDateIsNull(asset)
+                    .orElseThrow(() -> new ResourceNotFound("No active history found"));
+
+            history.setEndDate(LocalDateTime.now());
+            assetAssignmentHistoryRepository.save(history);
+        }
+    }
+
+    private void saveHistory(Asset asset) {
+        LocalDateTime now = LocalDateTime.now();
+        History history = new History();
+        history.setUser(null);
+        history.setAsset(asset);
+        history.setNotes("Under maintenance");
+        history.setStartDate(now);
+        assetAssignmentHistoryRepository.save(history);
     }
 }
