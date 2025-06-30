@@ -5,12 +5,14 @@ import com.example.Asset.Tracking.System.entity.AssetAssignment;
 import com.example.Asset.Tracking.System.entity.History;
 import com.example.Asset.Tracking.System.entity.User;
 import com.example.Asset.Tracking.System.enums.AssetStatus;
+import com.example.Asset.Tracking.System.enums.Role;
 import com.example.Asset.Tracking.System.exceptions.ResourceNotFound;
 import com.example.Asset.Tracking.System.repository.HistoryRepository;
 import com.example.Asset.Tracking.System.repository.AssetAssignmentRepository;
 import com.example.Asset.Tracking.System.repository.UserRepository;
 import com.example.Asset.Tracking.System.request.AssignAssetRequest;
 import com.example.Asset.Tracking.System.service.asset.IAssetService;
+import com.example.Asset.Tracking.System.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +29,16 @@ public class AssetAssignmentService implements IAssetAssignmentService {
     private final UserRepository userRepository;
     private final IAssetService assetService;
     private final HistoryRepository assetAssignmentHistoryRepository;
+    private final UserService userService;
 
     @Override
     public AssetAssignment assignAssetToUser(AssignAssetRequest request) {
-        User user = userRepository.findById(request.getUserId()).orElseThrow(
-                () -> new ResourceNotFound("User not found")
-        );
+        User user = userService.getAuthenticatedUser();
+        Long userId;
+        if(user.getRole()== Role.ADMIN)
+            userId= request.getUserId();
+        else
+            userId =user.getId();
         Asset asset = assetService.getAssetById(request.getAssetId());
         if (asset.getStatus() != AVAILABLE) {
             String statusStr = asset.getStatus().name().toLowerCase().replace("_", " ");

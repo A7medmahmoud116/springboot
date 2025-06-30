@@ -1,7 +1,9 @@
 package com.example.Asset.Tracking.System.exceptions;
 
 import com.example.Asset.Tracking.System.response.ExeptionResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,6 +34,14 @@ public class GlobalExceptionHandler {
         error.setMessage(exception.getMessage());
         error.setStatus(BAD_REQUEST.value());
         return new ResponseEntity<>(error,BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ExeptionResponse> handleAlreadyExistException(UsernameNotFoundException exception) {
+        ExeptionResponse error = new ExeptionResponse();
+        error.setMessage(exception.getMessage());
+        error.setStatus(HttpStatus.UNAUTHORIZED.value());
+        return new ResponseEntity<>(error,HttpStatus.UNAUTHORIZED);
     }
 
 }

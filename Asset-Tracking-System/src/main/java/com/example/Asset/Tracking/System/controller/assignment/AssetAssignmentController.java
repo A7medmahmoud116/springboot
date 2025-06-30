@@ -1,6 +1,9 @@
 package com.example.Asset.Tracking.System.controller.assignment;
+import com.example.Asset.Tracking.System.entity.User;
+import com.example.Asset.Tracking.System.enums.Role;
 import com.example.Asset.Tracking.System.response.ApiResponse;
 import com.example.Asset.Tracking.System.service.assignment.AssetAssignmentService;
+import com.example.Asset.Tracking.System.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import com.example.Asset.Tracking.System.entity.AssetAssignment;
@@ -13,12 +16,14 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("${api.prefix}/assignment")
 public class AssetAssignmentController {
     private final AssetAssignmentService assetAssignmentService;
+    private final UserService userService;
 
     @PostMapping("/assign")
     public ResponseEntity<ApiResponse> assignAsset(@RequestBody AssignAssetRequest request) {
         AssetAssignment assignment = assetAssignmentService.assignAssetToUser(request);
         return ResponseEntity.ok(new ApiResponse("success",assignment));
     }
+
     @DeleteMapping("/{assetId}")
     public ResponseEntity<ApiResponse> deleteAssignmentByAssetId(@PathVariable Long assetId) {
         assetAssignmentService.deleteAssetAssignmentByAssetId(assetId);

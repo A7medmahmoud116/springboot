@@ -39,7 +39,7 @@ public class HistoryService implements IHistoryService{
 
         if (history.getUser() != null) {
             dto.setUserId(history.getUser().getId());
-            dto.setUserName(history.getUser().getUserName());
+            dto.setUserName(history.getUser().getUsername());
         }
 
         if (history.getAsset() != null) {

@@ -5,6 +5,7 @@ import com.example.Asset.Tracking.System.request.AssignAssetRequest;
 
 public interface IAssetAssignmentService {
     AssetAssignment assignAssetToUser(AssignAssetRequest request);
+
     public void deleteAssetAssignmentByAssetId(Long assignmentId);
 
     void sendAssetToMaintenance(Long assetId);
